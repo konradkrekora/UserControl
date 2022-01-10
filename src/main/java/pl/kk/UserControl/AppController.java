@@ -1,81 +1,85 @@
 package pl.kk.UserControl;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import pl.kk.UserControl.quote.Quote;
-import pl.kk.UserControl.quote.QuoteRepository;
+import pl.kk.UserControl.quote.QuoteService;
+import pl.kk.UserControl.skill.UserSkillService;
+import pl.kk.UserControl.user.CustomUserDetailsService;
 import pl.kk.UserControl.user.User;
-import pl.kk.UserControl.user.UserRepository;
 
-import java.util.List;
-
-@Controller
+@RestController
+@RequestMapping(value = "/api")
+@CrossOrigin
+@RequiredArgsConstructor
 public class AppController {
 
-    private final UserRepository userRepository;
-    private final QuoteRepository quoteRepository;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final QuoteService quoteService;
+    private final UserSkillService userSkillService;
 
-    public AppController(UserRepository userRepository, QuoteRepository quoteRepository) {
 
-        this.userRepository = userRepository;
-        this.quoteRepository = quoteRepository;
-    }
-
-    @GetMapping("")
+    @ApiOperation(value = "Show Home Page", notes = "Shows home page")
+    @GetMapping("/")
     public String showHomePage() {
-        return "index";
+        return customUserDetailsService.showHomePage();
     }
 
-    @GetMapping("/register")
+    @ApiOperation(value = "Show Register Form", notes = "Shows register form")
+    @GetMapping(value = "/register")
     public String showRegisterForm(Model model) {
-        model.addAttribute("user", new User());
-        return "registration_form";
+        return customUserDetailsService.showRegisterForm(model);
     }
 
-    @PostMapping("/process_register")
+    @ApiOperation(value = "Process Registration", notes = "Saves User in DB and shows successfull registration page")
+    @PostMapping(value = "/process_register")
     public String processRegistration(User user) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String encodedPassword = encoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
-        userRepository.save(user);
-
-        return "registration_success";
+        return customUserDetailsService.processRegistration(user);
     }
 
-    @GetMapping("/panel")
-    public String showUserPanel() {;
-        return "user_panel";
+    @ApiOperation(value = "Show User Panel", notes = "Shows user panel")
+    @GetMapping(value = "/panel")
+    public String showUserPanel() {
+        return customUserDetailsService.showUserPanel();
     }
 
-    @GetMapping("/list_users")
+    @ApiOperation(value = "Show Users", notes = "Shows user list")
+    @GetMapping(value = "/list_users")
     public String showUsers(Model model) {
-        List<User> usersList = userRepository.findAll();
-        model.addAttribute("usersList", usersList);
-        return "users";
+        return customUserDetailsService.showUsers(model);
     }
 
-    @GetMapping("/add_quote")
+    @ApiOperation(value = "Show Add Quote Form", notes = "Shows form to add quote")
+    @GetMapping(value = "/add_quote")
     public String showAddQuoteForm(Model model) {
-        model.addAttribute("quote", new Quote());
-        return "add_quote_form";
+        return quoteService.showAddQuoteForm(model);
     }
 
-    @PostMapping("/process_add_quote")
+    @ApiOperation(value = "Process Add Quote", notes = "Saves Quote in DB and shows successfull add quote page")
+    @PostMapping(value = "/process_add_quote")
     public String processAddQuote(Quote quote) {
-        quoteRepository.save(quote);
-        return "add_quote_success";
+        return quoteService.processAddQuote(quote);
     }
 
-    @GetMapping("/list_quotes")
+    @ApiOperation(value = "Show Quotes", notes = "Shows Quotes list")
+    @GetMapping(value = "/list_quotes")
     public String showQuotes(Model model) {
-        List<Quote> quotesList = quoteRepository.findAll();
-        model.addAttribute("quotesList", quotesList);
-        return "quotes";
+        return quoteService.showQuotes(model);
     }
 
+    @ApiOperation(value = "Show Skills", notes = "Shows all users skills")
+    @GetMapping(value = "/list_user_skills")
+    public String showSkills(Model model) {
+        return userSkillService.showSkills(model);
+    }
+
+    @ApiOperation(value = "Get one user")
+    @GetMapping(value = "/get_one_user")
+    public User getUser(Integer id) {
+        return customUserDetailsService.getOneUserById(id);
+    }
 
 
 }

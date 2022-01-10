@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import pl.kk.UserControl.user.CustomUserDetailsService;
+import pl.kk.UserControl.user.UserRepository;
 
 import javax.sql.DataSource;
 
@@ -20,10 +21,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private DataSource dataSource;
-
+    private UserRepository userRepository;
     @Bean
     public UserDetailsService userDetailsService() {
-        return new CustomUserDetailsService();
+        return new CustomUserDetailsService(userRepository);
     }
 
     @Bean

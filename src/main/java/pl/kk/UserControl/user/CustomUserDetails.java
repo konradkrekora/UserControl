@@ -9,7 +9,6 @@ import java.util.Collection;
 public class CustomUserDetails implements UserDetails {
 
     User user;
-    Quote quote;
 
     public CustomUserDetails(User user) {
         this.user = user;
@@ -52,12 +51,6 @@ public class CustomUserDetails implements UserDetails {
 
     public String getFullName() {
         return user.getFirstName() + " " + user.getLastName();
-    }
-    public String getQuotation() {
-        return quote.getContent();
-    }
-    public String getAutorName() {
-        return quote.getFirstName() + " " + quote.getLastName();
     }
 
 }
