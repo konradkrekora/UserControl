@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - UserControl</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="container text-center" >
+        <div class="text-primary">
+            <h1 class="header">Welcome to home page</h1>
+            <hr>
+        </div>
+        <div class="text-secondary">
+            <p class="lead">
+                You are at UserControl home page.
+            </p>
+            <p>
+                This website is <mark>responsive</mark>. Try to change size of your browser window or use DevTools.
+            </p>
+            <hr>
+        </div>
+
+        <p class="text-secondary">
+            Try to press<mark>All Users List</mark> If you're not logged in, you would be directed to logging page.
+        </p>
+
+        <div>
+            <h3><a class="btn btn-primary" role="button" href="/list_users">All Users List</a></h3>
+            <h3><a class="btn btn-primary" role="button" href="/register">Register</a></h3>
+            <h3><a class="btn btn-primary" role="button" href="/login">Login</a></h3>
+        </div>
+    </div>
+
+</body>
+</html>

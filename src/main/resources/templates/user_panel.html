@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Panel - UserControl</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+
+</head>
+<body>
+    <div class="container text-center" >
+        <div>
+            <form th:action="@{/logout}">
+                <div class="float-end m-2">
+                    <input type="submit" value="Logout"/>
+                </div>
+            </form>
+        </div>
+        <h1 class="header text-primary">
+            Welcome <b>[[${#request.userPrincipal.principal.fullName}]]</b>
+        </h1>
+
+        <hr>
+
+        <div>
+            <p class="text-secondary">
+                Try to show <mark>user list</mark> or add new <mark>quote!</mark>
+            </p>
+        </div>
+        <div>
+            <h3><a class="btn btn-primary" role="button" href="/list_users">Users List</a></h3>
+            <h3><a class="btn btn-primary" role="button" href="/add_quote">Add quote</a></h3>
+            <h3><a class="btn btn-primary" role="button" href="/list_quotes">Quotations List</a></h3>
+            <h3><a class="btn btn-primary" role="button" href="/list_skills">Your Skills</a></h3>
+        </div>
+
+        <hr>
+
+            <blockquote class="blockquote text-secondary">
+                <p><b>Każdy głupiec może napisać kod zrozumiały dla komputera.
+                    Dobrzy programiści potrafią stworzyć kod zrozumiały dla ludzi.</b></p>
+                <footer>Quote by <cite title="Martin Fowler">Martin Fowler</cite></footer>
+            </blockquote>
+
+    </div>
+
+</body>
+</html>
