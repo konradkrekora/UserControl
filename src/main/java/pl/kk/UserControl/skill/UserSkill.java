@@ -1,34 +1,26 @@
 package pl.kk.UserControl.skill;
 
+import lombok.*;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "user_skills")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserSkill {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private long userSkillId;
 
-    public UserSkill() {
+    @Column(name = "user_id")
+    private long userId;
 
-    }
+    @Column(name = "skill_id")
+    private long skillId;
 
-    public UserSkill(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return "UserSkill{" +
-                "id=" + id +
-                '}';
-    }
 }
