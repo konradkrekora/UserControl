@@ -1,12 +1,13 @@
 package pl.kk.UserControl.skill;
 
 import lombok.*;
+import pl.kk.UserControl.user.User;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "skills")
-@SecondaryTable(name = "user_skills")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,6 +16,7 @@ import javax.persistence.*;
 public class Skill {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column
     private long id;
 
     @Column(name = "skill_name", nullable = false, length = 45)
@@ -23,8 +25,8 @@ public class Skill {
     @Column(name = "skill_level", nullable = false, length = 45)
     private String skillLevel;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(table = "user_skills", name = "skill_id")
-    private UserSkill skillId;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "user_skills", joinColumns = @JoinColumn(name = "skill_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> users;
 
 }

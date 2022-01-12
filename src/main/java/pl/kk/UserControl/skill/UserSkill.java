@@ -15,7 +15,7 @@ public class UserSkill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long userSkillId;
+    private long id;
 
     @Column(name = "user_id")
     private long userId;
