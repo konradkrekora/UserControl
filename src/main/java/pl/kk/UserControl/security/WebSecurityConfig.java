@@ -1,6 +1,6 @@
-package pl.kk.UserControl;
+package pl.kk.UserControl.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -8,47 +8,38 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import pl.kk.UserControl.user.CustomUserDetailsService;
-import pl.kk.UserControl.user.UserRepository;
+import pl.kk.UserControl.user.UserService;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import javax.sql.DataSource;
 
 @Configuration
+@AllArgsConstructor
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private DataSource dataSource;
-    private UserRepository userRepository;
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new CustomUserDetailsService(userRepository);
-    }
+    private final UserService userService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setUserDetailsService(userService);
+        authProvider.setPasswordEncoder(bCryptPasswordEncoder);
 
         return authProvider;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authenticationProvider());
+        auth.authenticationProvider(daoAuthenticationProvider());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http.csrf().disable()
+                .authorizeRequests()
                 .antMatchers("/panel", "/list_users", "list_quotes").authenticated()
                 .anyRequest().permitAll()
                 .and()

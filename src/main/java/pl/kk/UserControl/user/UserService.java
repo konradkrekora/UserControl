@@ -1,7 +1,6 @@
 package pl.kk.UserControl.user;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,34 +9,38 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CustomUserDetailsService implements UserDetailsService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-//kk...model(users.name, skills.skill_level, skills.skill_name) from user skills join left user where user_skills.user_id = users.id  left join skills on skills.id = user_skills.skill_id
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    public String signUpUser(User user) {
+        boolean userExists = userRepository.findByEmail(user.getEmail()).isPresent();
+        if (userExists) {
+            throw new IllegalStateException("User already exist");
         }
-        return new CustomUserDetails(user);
-    }
-
-    public User getOneUserById(Integer id) {
-        return userRepository.findById(id).orElseThrow(()-> new UsernameNotFoundException("Not fount"));
-    }
-
-    public String processRegistration(User user) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String encodedPassword = encoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return "registration_success";
+        return "it works";
+    }
+
+
+
+
+
+
+    public User getOneUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(()-> new UsernameNotFoundException("Not fount"));
     }
 
     public String showUsers(Model model) {
